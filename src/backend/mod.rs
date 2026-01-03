@@ -1,3 +1,4 @@
+use crate::LED;
 use core::error::Error;
 use core::fmt;
 
@@ -7,7 +8,7 @@ mod sdl3_backend;
 pub use sdl3_backend::SDL3Backend;
 
 pub trait Backend {
-    // fn update();
+    fn update(&mut self, leds: &[LED]) -> Result<(), BackendError>;
 }
 
 /// Wrapper for errors returned by the backend.

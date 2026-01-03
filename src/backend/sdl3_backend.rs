@@ -1,6 +1,6 @@
 use super::*;
 
-use sdl3::pixels::Color;
+use sdl3::{pixels::Color, rect::Rect};
 
 impl From<sdl3::Error> for BackendError {
     fn from(e: sdl3::Error) -> Self {
@@ -44,5 +44,24 @@ impl SDL3Backend {
             width,
             canvas,
         })
+    }
+}
+
+impl Backend for SDL3Backend {
+    fn update(&mut self, leds: &[LED]) -> Result<(), BackendError> {
+        let led_side = 20;
+
+        for (i, l) in leds.iter().enumerate() {
+            self.canvas.set_draw_color(Color::RGB(l.r, l.g, l.b));
+            self.canvas.fill_rect(Rect::new(
+                (i as i32) * (led_side as i32),
+                0,
+                led_side,
+                led_side,
+            ))?
+        }
+
+        self.canvas.present();
+        Ok(())
     }
 }
