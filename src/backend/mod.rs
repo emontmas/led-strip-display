@@ -38,3 +38,9 @@ impl fmt::Display for BackendError {
         }
     }
 }
+
+impl From<String> for BackendError {
+    fn from(s: String) -> Self {
+        BackendError::Str(s)
+    }
+}
