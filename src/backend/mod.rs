@@ -2,10 +2,14 @@ use crate::LED;
 use core::error::Error;
 use core::fmt;
 
+#[cfg(feature = "sdl2")]
+mod sdl2_backend;
 #[cfg(feature = "sdl3")]
 mod sdl3_backend;
 
 // Re-exports
+#[cfg(feature = "sdl2")]
+pub use sdl2_backend::SDL2Backend;
 #[cfg(feature = "sdl3")]
 pub use sdl3_backend::SDL3Backend;
 
