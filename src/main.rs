@@ -11,10 +11,10 @@ fn main() {
     let sdl_context = sdl3::init().unwrap();
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    let strip_length = 40;
+    let strip_length = 200;
     let mut strip: LEDStrip = vec![LED::default(); strip_length];
 
-    let mut display = led_strip_test::LEDStripDisplay::new(strip_length, &sdl_context).unwrap();
+    let mut display = led_strip_test::LEDStripDisplay::new(strip_length, 20, &sdl_context).unwrap();
 
     let mut t = 0;
     let t_max = 60;
