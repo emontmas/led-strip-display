@@ -15,20 +15,26 @@ pub trait Backend {
 
 /// Wrapper for errors returned by the backend.
 #[derive(Debug)]
-pub struct BackendError {
-    source: Box<dyn Error + 'static>,
+pub enum BackendError {
+    ErrorSource(Box<dyn Error + 'static>),
+    Str(String),
 }
 
 impl Error for BackendError {
-    /// Return error source.
-    /// BackendError is always caused by another error, so this method cannot return None.
+    /// Return error source, or None if the BackendError contains a String.
     fn source(&self) -> Option<&(dyn Error + 'static)> {
-        Some(self.source.as_ref())
+        match self {
+            BackendError::ErrorSource(s) => Some(s.as_ref()),
+            BackendError::Str(_) => None,
+        }
     }
 }
 
 impl fmt::Display for BackendError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Backend error: {}", self.source().unwrap())
+        match self {
+            BackendError::ErrorSource(s) => write!(f, "Backend error: {}", s),
+            BackendError::Str(s) => write!(f, "Backend error: {}", s),
+        }
     }
 }

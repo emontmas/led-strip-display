@@ -4,17 +4,13 @@ use sdl3::{pixels::Color, render::FRect};
 
 impl From<sdl3::Error> for BackendError {
     fn from(e: sdl3::Error) -> Self {
-        Self {
-            source: Box::new(e),
-        }
+        BackendError::ErrorSource(Box::new(e))
     }
 }
 
 impl From<sdl3::video::WindowBuildError> for BackendError {
     fn from(e: sdl3::video::WindowBuildError) -> Self {
-        Self {
-            source: Box::new(e),
-        }
+        BackendError::ErrorSource(Box::new(e))
     }
 }
 
