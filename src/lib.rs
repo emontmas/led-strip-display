@@ -1,5 +1,8 @@
 use crate::backend::{Backend, BackendError};
 
+#[cfg(not(any(feature = "sdl3", feature = "sdl2")))]
+compile_error!("At least one backend feature should be enabled !");
+
 /// Module containing low-level implementation for LED strip display.
 mod backend;
 
