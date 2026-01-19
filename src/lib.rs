@@ -34,19 +34,27 @@ pub struct LEDStripDisplay {
 impl LEDStripDisplay {
     /// Create and initialize a LEDStripDisplay window with the SDL3 backend.
     #[cfg(feature = "sdl3")]
-    pub fn new(length: usize, led_per_row: u32, context: &sdl3::Sdl) -> Result<Self, BackendError> {
+    pub fn new(
+        length: usize,
+        led_per_row: u32,
+        video_subsystem: &sdl3::VideoSubsystem,
+    ) -> Result<Self, BackendError> {
         Ok(LEDStripDisplay {
             length,
-            backend: backend::SDL3Backend::new(600, 800, led_per_row, context)?,
+            backend: backend::SDL3Backend::new(600, 800, led_per_row, video_subsystem)?,
         })
     }
 
     /// Create and initialize a LEDStripDisplay window with the SDL2 backend.
     #[cfg(feature = "sdl2")]
-    pub fn new(length: usize, led_per_row: u32, context: &sdl2::Sdl) -> Result<Self, BackendError> {
+    pub fn new(
+        length: usize,
+        led_per_row: u32,
+        video_subsystem: &sdl2::VideoSubsystem,
+    ) -> Result<Self, BackendError> {
         Ok(LEDStripDisplay {
             length,
-            backend: backend::SDL2Backend::new(600, 800, led_per_row, context)?,
+            backend: backend::SDL2Backend::new(600, 800, led_per_row, video_subsystem)?,
         })
     }
 

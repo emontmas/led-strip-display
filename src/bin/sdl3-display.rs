@@ -14,7 +14,9 @@ fn main() {
     let strip_length = 200;
     let mut strip: LEDStrip = vec![LED::default(); strip_length];
 
-    let mut display = led_strip_test::LEDStripDisplay::new(strip_length, 20, &sdl_context).unwrap();
+    let mut display =
+        led_strip_test::LEDStripDisplay::new(strip_length, 20, &sdl_context.video().unwrap())
+            .unwrap();
 
     let mut t = 0;
     let t_max = 60;

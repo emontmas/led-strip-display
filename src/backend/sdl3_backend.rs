@@ -35,10 +35,8 @@ impl SDL3Backend {
         height: u32,
         width: u32,
         led_per_row: u32,
-        context: &sdl3::Sdl,
+        video_subsystem: &sdl3::VideoSubsystem,
     ) -> Result<Self, BackendError> {
-        let video_subsystem = context.video()?;
-
         let window = video_subsystem
             .window("led-strip-display", width, height)
             .position_centered()
