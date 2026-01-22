@@ -9,6 +9,9 @@ compile_error!("Can't activate both SDL2 and SDL3 backends at the same time!");
 /// Module containing low-level implementation for LED strip display.
 mod backend;
 
+/// FFI bindings for C code
+mod c_api;
+
 #[repr(C)]
 #[derive(Clone, Debug, Default)]
 pub struct LED {

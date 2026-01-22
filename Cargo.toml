@@ -4,9 +4,14 @@ version = "0.1.0"
 edition = "2021"
 default-run = "sdl3-display"
 
+[lib]
+name = "led_strip_display"
+crate-type = ["lib", "staticlib"]
+
 [dependencies]
 sdl3 = { version = "0.17.0", optional = true }
 sdl2 = { version = "0.38.0", optional = true }
+cty = "0.2.2"
 
 [[bin]]
 name = "sdl3-display"
