@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use f32::consts::PI;
 
-use led_strip_test::*;
+use led_strip_display::*;
 
 fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -15,7 +15,7 @@ fn main() {
     let mut strip: LEDStrip = vec![LED::default(); strip_length];
 
     let mut display =
-        led_strip_test::LEDStripDisplay::new(strip_length, 20, &sdl_context.video().unwrap())
+        led_strip_display::LEDStripDisplay::new(strip_length, 20, &sdl_context.video().unwrap())
             .unwrap();
 
     let mut t = 0;
