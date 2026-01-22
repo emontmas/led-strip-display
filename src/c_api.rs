@@ -48,3 +48,32 @@ pub extern "C" fn led_strip_display_new(
 
     Box::into_raw(Box::new(display))
 }
+
+#[no_mangle]
+pub extern "C" fn led_strip_display_free(display: *mut LEDStripDisplay) {
+    if !display.is_null() {
+        unsafe { drop(Box::from_raw(display)) };
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn led_strip_update(
+    display: *mut LEDStripDisplay,
+    leds: *const LED,
+    length: cty::size_t,
+) -> cty::c_int {
+    if display.is_null() || leds.is_null() {
+        println!("Can't update LED strip display, a parameter is null.");
+        return -1;
+    }
+
+    let display = unsafe { &mut *display };
+    let leds = unsafe { std::slice::from_raw_parts(leds, length) };
+
+    if let Err(e) = display.update(leds) {
+        println!("Can't update LED strip display: {e}");
+        -1
+    } else {
+        0
+    }
+}
