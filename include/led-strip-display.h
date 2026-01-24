@@ -2,6 +2,9 @@
  * led-strip-display C FFI bindings
  */
 
+#ifndef LED_STRIP_DISPLAY_H
+#define LED_STRIP_DISPLAY_H
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -30,3 +33,5 @@ void led_strip_display_free(LEDStripDisplay *display);
  * @result 0 if the display was updated without error, -1 otherwise.
  */
 int led_strip_update(LEDStripDisplay *display, const LED *leds, size_t length);
+
+#endif // LED_STRIP_DISPLAY_H
