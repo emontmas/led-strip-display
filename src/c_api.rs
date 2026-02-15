@@ -24,16 +24,38 @@ fn get_sdl3_context() -> Result<sdl3::VideoSubsystem, sdl3::Error> {
     sdl3::init()?.video()
 }
 
+/// When using the C API, the crate should not be responsible for initialization
+/// and uninitialization of the SDL context (SDL_Init() / SDL_Quit()).
+/// With the sdl crate, this is done through the Sdl struct initialization.
+/// However this struct is still necessary to use the crate.
+/// Also, there is no way to ensure usage of the SDL API (C or Rust) from
+/// a single "main" thread in C.
+/// Therefore the first call to this method creates and forget an Sdl context
+/// to force internal crate ref counter to always be >1.
+#[cfg(feature = "sdl2")]
+fn get_sdl2_context() -> Result<sdl2::VideoSubsystem, String> {
+    if !HOLD_SDL.fetch_or(true, std::sync::atomic::Ordering::Relaxed) {
+        let c = sdl2::init()?;
+        std::mem::forget(c); // Increment SDL_COUNT, but never call drop() to decrease it.
+    }
+
+    sdl2::init()?.video()
+}
+
 #[no_mangle]
-#[cfg(feature = "sdl3")]
 pub extern "C" fn led_strip_display_new(
     length: cty::size_t,
     led_per_row: cty::uint32_t,
 ) -> *mut LEDStripDisplay {
-    let video_subsys = match get_sdl3_context() {
+    #[cfg(feature = "sdl2")]
+    let video_subsys_res = get_sdl2_context();
+    #[cfg(feature = "sdl3")]
+    let video_subsys_res = get_sdl3_context();
+
+    let video_subsys = match video_subsys_res {
         Ok(s) => s,
         Err(e) => {
-            println!("Can't create LED strip display with SDL3: {e}");
+            println!("Can't create LED strip display with SDL: {e}");
             return std::ptr::null_mut();
         }
     };
@@ -41,7 +63,7 @@ pub extern "C" fn led_strip_display_new(
     let display = match LEDStripDisplay::new(length, led_per_row, &video_subsys) {
         Ok(d) => d,
         Err(e) => {
-            println!("Can't create LED strip display with SDL3: {e}");
+            println!("Can't create LED strip display with SDL: {e}");
             return std::ptr::null_mut();
         }
     };
