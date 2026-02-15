@@ -12,7 +12,7 @@ int main()
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
         SDL_Log("SDL init error: %s\n", SDL_GetError());
-        return false;
+        return 1;
     }
 
     LEDStripDisplay *display = led_strip_display_new(200, 40);
@@ -56,4 +56,6 @@ int main()
     led_strip_display_free(display);
 
     SDL_Quit();
+
+    return 0;
 }
