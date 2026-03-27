@@ -7,10 +7,22 @@ option(SDL2 "Use SDL2 backend" OFF)
 option(SDL3 "Use SDL3 backend" OFF)
 option(BUILD_EXAMPLE "Build example binary" OFF)
 
+# Useful if the consumer package already link to the SDL library in its own way
+option(INTERFACE_LINK_SDL "Link as INTERFACE the library target with the 0SDL package as found with find_package()." ON)
+
 if (NOT SDL2 AND NOT SDL3)
     message(FATAL_ERROR "No SDL backend option is set!")
 elseif(SDL2 AND SDL3)
     message(FATAL_ERROR "Can't enable both SDL2 and SDL3 backend!")
+endif()
+
+
+if(BUILD_EXAMPLE OR INTERFACE_LINK_SDL)
+    if(SDL2)
+        find_package(SDL2 REQUIRED)
+    elseif(SDL3)
+        find_package(SDL3 REQUIRED)
+    endif()
 endif()
 
 # =========================
@@ -30,10 +42,8 @@ endif()
 
 if (SDL2)
     set(BACKEND "sdl2")
-    find_package(SDL2 REQUIRED)
 elseif(SDL3)
     set(BACKEND "sdl3")
-    find_package(SDL3 REQUIRED)
 endif()
 
 corrosion_import_crate(
@@ -48,10 +58,12 @@ target_sources(led_strip_display INTERFACE
         FILES led-strip-display.h
 )
 
-if (SDL2)
-    target_link_libraries(led_strip_display INTERFACE SDL2::SDL2)
-elseif(SDL3)
-    target_link_libraries(led_strip_display INTERFACE SDL3::SDL3)
+if(INTERFACE_LINK_SDL)
+    if (SDL2)
+        target_link_libraries(led_strip_display INTERFACE SDL2::SDL2)
+    elseif(SDL3)
+        target_link_libraries(led_strip_display INTERFACE SDL3::SDL3)
+    endif()
 endif()
 
 # =======
@@ -72,4 +84,10 @@ if (BUILD_EXAMPLE)
         ${EXAMPLE_SRC}
     )
     target_link_libraries(${EXAMPLE_NAME} led_strip_display)
+
+    if (SDL2)
+        target_link_libraries(${EXAMPLE_NAME} SDL2::SDL2)
+    elseif(SDL3)
+        target_link_libraries(${EXAMPLE_NAME} SDL3::SDL3)
+    endif()
 endif()
