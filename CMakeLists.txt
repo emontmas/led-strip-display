@@ -55,7 +55,7 @@ corrosion_import_crate(
 target_sources(led_strip_display INTERFACE
         FILE_SET HEADERS
         BASE_DIRS include
-        FILES led-strip-display.h
+        FILES include/led-strip-display.h
 )
 
 if(INTERFACE_LINK_SDL)
